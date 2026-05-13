@@ -1,14 +1,18 @@
 #include <iostream>
 #include <vector>
-#include <climits>
 using namespace std;
 
-void insertionSort(vector<int>& arr) {
+const int MAX_SIZE = 100000;
+
+void insertionSort(vector<int> &arr)
+{
     int N = arr.size();
-    for (int i = 1; i < N; ++i) {
+    for (int i = 1; i < N; ++i)
+    {
         int key = arr[i];
         int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
+        while (j >= 0 && arr[j] > key)
+        {
             arr[j + 1] = arr[j];
             --j;
         }
@@ -16,14 +20,17 @@ void insertionSort(vector<int>& arr) {
     }
 }
 
-int printDominatorIndices(const int original[], int length) {
-    if (length == 0) {
+int printDominatorIndices(const int original[], int length)
+{
+    if (length == 0)
+    {
         cout << "No dominator found." << endl;
-        return INT_MIN;
+        return -1;
     }
-    if (length == 1) {
+    if (length == 1)
+    {
         cout << "Dominator found at index: 0" << endl;
-        return original[0];
+        return 0;
     }
 
     vector<int> sorted(original, original + length);
@@ -33,40 +40,62 @@ int printDominatorIndices(const int original[], int length) {
     bool found = false;
     int half = length / 2;
 
-    for (int i = 0; i < length - half; ++i) {
-        if (sorted[i] == sorted[i + half]) {
+    for (int i = 0; i < length - half; ++i)
+    {
+        if (sorted[i] == sorted[i + half])
+        {
             candidate = sorted[i];
             found = true;
             break;
         }
     }
 
-    if (!found) {
+    if (!found)
+    {
         cout << "No dominator found." << endl;
-        return INT_MIN;
+        return -1;
     }
 
+    int firstIndex = -1;
     cout << "Dominator found at indices: ";
-    bool first = true;
-    for (int i = 0; i < length; ++i) {
-        if (original[i] == candidate) {
-            if (!first) cout << ", ";
-            cout << i;
-            first = false;
+    for (int i = 0; i < length; ++i)
+    {
+        if (original[i] == candidate)
+        {
+            if (firstIndex == -1)
+                firstIndex = i;
+            cout << i << " ";
         }
     }
     cout << endl;
+    cout << "Dominator value: " << candidate << endl;
 
-    return candidate;
+    return firstIndex; 
 }
 
-int main() {
-    int A[] = {1, 2, 2, 2, 3, 4, 2};
-    int N = sizeof(A) / sizeof(A[0]);
+int main()
+{
+    static int A[MAX_SIZE];
+    int N;
 
-    int val = printDominatorIndices(A, N);
-    if (val != INT_MIN)
-        cout << "Dominator value: " << val << endl;
+    cout << "Enter number of elements (0 to " << MAX_SIZE << "): ";
+    cin >> N;
+
+    if (N < 0 || N > MAX_SIZE)
+    {
+        cout << "Invalid size." << endl;
+        return 1;
+    }
+
+    cout << "Enter " << N << " integers: ";
+    for (int i = 0; i < N; ++i)
+        cin >> A[i];
+
+    int result = printDominatorIndices(A, N);
+    if (result == -1)
+        cout << "No dominator. Returning -1." << endl;
+    else
+        cout << "Returned index: " << result << endl;
 
     return 0;
 }

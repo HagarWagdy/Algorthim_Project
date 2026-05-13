@@ -3,7 +3,7 @@
 #include <climits>
 using namespace std;
 
-const int NO_CANDIDATE = INT_MIN;  // sentinel for 'no majority'
+const int NO_CANDIDATE = INT_MIN; // sentinel for 'no majority'
 
 // Count occurrences of val in A[lowestIndex..highestIndex]
 int countInRange(const vector<int>& A, int lowestIndex, int highestIndex, int val) {
@@ -22,7 +22,7 @@ int dominatorDC(const vector<int>& A, int lowestIndex, int highestIndex) {
     int mid = (lowestIndex + highestIndex) / 2;
 
     // ── Divide ────────────────────────────────────────────
-    int leftCand  = dominatorDC(A, lowestIndex,      mid);
+    int leftCand  = dominatorDC(A, lowestIndex, mid);
     int rightCand = dominatorDC(A, mid + 1, highestIndex);
 
     // ── Merge: trivial case ───────────────────────────────
@@ -42,31 +42,41 @@ int dominatorDC(const vector<int>& A, int lowestIndex, int highestIndex) {
         if (rCount > size / 2) return rightCand;
     }
 
-    return NO_CANDIDATE;  // no majority in this range
+    return NO_CANDIDATE; // no majority in this range
 }
 
-// Returns index of any Dominator element, or -1.
-int findDominator_DC(const vector<int>& A) {
+// Returns all indices of the Dominator element, or empty vector.
+vector<int> findDominator_DC(const vector<int>& A) {
     int n = A.size();
-    if (n == 0) return -1;
+    if (n == 0) return {};
 
     int candidate = dominatorDC(A, 0, n - 1);
-    if (candidate == NO_CANDIDATE) return -1;
+    if (candidate == NO_CANDIDATE) return {};
 
-    // Return first occurrence index
+    // Collect ALL occurrences
+    vector<int> indices;
     for (int i = 0; i < n; i++)
-        if (A[i] == candidate) return i;
+        if (A[i] == candidate) indices.push_back(i);
 
-    return -1;
+    return indices;
 }
 
 int main() {
     vector<int> A = {3, 4, 3, 2, 3, -1, 3, 3};
-    int idx = findDominator_DC(A);
-    if (idx != -1)
-        cout << "Dominator index: " << idx
-             << "  (value = " << A[idx] << ")" << endl;
-    else
+
+    vector<int> indices = findDominator_DC(A);
+
+    if (!indices.empty()) {
+        cout << "Dominator value: " << A[indices[0]] << endl;
+        cout << "Dominator indices: ";
+        for (int i = 0; i < (int)indices.size(); i++) {
+            if (i > 0) cout << ", ";
+            cout << indices[i];
+        }
+        cout << endl;
+    } else {
         cout << "No Dominator found." << endl;
+    }
+
     return 0;
 }

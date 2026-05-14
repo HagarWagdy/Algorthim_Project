@@ -93,9 +93,9 @@ int main()
 
     int result = printDominatorIndices(A, N);
     if (result == -1)
-        cout << "No dominator. Returning -1." << endl;
+        cout << "No dominator found. Returning -1." << endl;
     else
-        cout << "Returned index: " << result << endl;
+        cout << "First index: " << result << endl;
 
     return 0;
 }
